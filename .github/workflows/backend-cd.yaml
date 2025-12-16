@@ -28,12 +28,13 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push backend image
-        working-directory: starter/backend
-        run: |
-          IMAGE_TAG=${GITHUB_SHA}
-          docker build -t $BACKEND_ECR_REPO:$IMAGE_TAG .
-          docker tag $BACKEND_ECR_REPO:$IMAGE_TAG $BACKEND_ECR_REPO:latest
-          docker push $BACKEND_ECR_REPO:$IMAGE_TAG
-          docker push $BACKEND_ECR_REPO:latest
-        env:
-          BACKEND_ECR_REPO: ${{ secrets.BACKEND_ECR_REPO }}
+  run: |
+    IMAGE_TAG=${GITHUB_SHA}
+    cd starter/backend
+    docker build -t $BACKEND_ECR_REPO:$IMAGE_TAG .
+    docker tag $BACKEND_ECR_REPO:$IMAGE_TAG $BACKEND_ECR_REPO:latest
+    docker push $BACKEND_ECR_REPO:$IMAGE_TAG
+    docker push $BACKEND_ECR_REPO:latest
+  env:
+    BACKEND_ECR_REPO: ${{ secrets.BACKEND_ECR_REPO }}
+
