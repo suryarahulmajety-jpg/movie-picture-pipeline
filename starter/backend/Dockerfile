@@ -17,4 +17,10 @@ RUN pipenv install --system --deploy
 
 COPY . .
 
-CMD ["uwsgi", "--http", ":5000", "--master", "--enable-threads", "--module", "movies.app:app"]
+CMD ["uwsgi", \
+     "--http", ":5000", \
+     "--wsgi-file", "movies/app.py", \
+     "--callable", "app", \
+     "--master", \
+     "--enable-threads"]
+
