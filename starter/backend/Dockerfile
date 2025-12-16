@@ -2,11 +2,14 @@ FROM python:3.10-slim
 
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
     build-essential \
+    libpcre3 \
+    libpcre3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir pipenv uwsgi
@@ -16,7 +19,4 @@ RUN pipenv install --system --deploy
 
 COPY . .
 
-EXPOSE 5000
-
-CMD uwsgi --http :5000 --master --enable-threads --module movies.app:app
-
+CMD ["uwsgi", "--http", ":5000", "--master", "--enable-threads", "--module", "movies.app:app"]
