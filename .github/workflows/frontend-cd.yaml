@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -39,7 +39,7 @@ jobs:
           docker push ${{ secrets.FRONTEND_ECR_REPO }}:$IMAGE_TAG
           docker push ${{ secrets.FRONTEND_ECR_REPO }}:latest
 
-      - name: Update kubeconfig
+      - name: Update kubeconfig for EKS
         run: |
           aws eks update-kubeconfig \
             --region ${{ secrets.AWS_REGION }} \
