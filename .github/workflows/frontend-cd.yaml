@@ -5,16 +5,15 @@ on:
     branches:
       - main
     paths:
-      - "starter/frontend/**"
+      - starter/frontend/**
   workflow_dispatch:
 
 jobs:
   deploy:
-    name: Deploy Frontend
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -30,15 +29,12 @@ jobs:
       - name: Build and push frontend image
         working-directory: starter/frontend
         run: |
-          set -eux
-
           IMAGE_TAG=${GITHUB_SHA}
 
           docker build \
             --build-arg REACT_APP_MOVIE_API_URL=${{ secrets.BACKEND_API_URL }} \
             -t ${{ secrets.FRONTEND_ECR_REPO }}:$IMAGE_TAG \
-            -t ${{ secrets.FRONTEND_ECR_REPO }}:latest \
-            .
+            -t ${{ secrets.FRONTEND_ECR_REPO }}:latest .
 
           docker push ${{ secrets.FRONTEND_ECR_REPO }}:$IMAGE_TAG
           docker push ${{ secrets.FRONTEND_ECR_REPO }}:latest
@@ -50,7 +46,6 @@ jobs:
             --name ${{ secrets.EKS_CLUSTER_NAME }}
 
       - name: Deploy frontend to EKS
-        working-directory: starter/frontend/k8s
         run: |
-          kubectl apply -f . --validate=false
+          kubectl apply -f starter/frontend/k8s
           kubectl rollout restart deployment frontend
