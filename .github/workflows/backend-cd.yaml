@@ -30,7 +30,7 @@ jobs:
         working-directory: starter/backend
         run: |
           IMAGE_TAG=${{ github.sha }}
-          docker build -t $BACKEND_ECR_REPO:$IMAGE_TAG .
+          docker build -t $BACKEND_ECR_REPO:$IMAGE_TAG starter/backend
           docker tag $BACKEND_ECR_REPO:$IMAGE_TAG $BACKEND_ECR_REPO:latest
           docker push $BACKEND_ECR_REPO:$IMAGE_TAG
           docker push $BACKEND_ECR_REPO:latest
