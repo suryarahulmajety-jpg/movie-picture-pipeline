@@ -27,20 +27,26 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push backend image (disable buildx)
+      - name: Build and push backend image (explicit path)
         env:
           BACKEND_ECR_REPO: ${{ secrets.BACKEND_ECR_REPO }}
           DOCKER_BUILDKIT: 0
         run: |
-          set -e
+          set -eux
+
           IMAGE_TAG=${GITHUB_SHA}
 
-          echo "Using classic Docker (BuildKit disabled)"
-          echo "Building image: $BACKEND_ECR_REPO:$IMAGE_TAG"
+          echo "Workspace contents:"
+          pwd
+          ls -la
+          echo "Backend directory contents:"
+          ls -la starter/backend
 
-          cd starter/backend
+          docker build \
+            -t $BACKEND_ECR_REPO:$IMAGE_TAG \
+            -f starter/backend/Dockerfile \
+            starter/backend
 
-          docker build -t $BACKEND_ECR_REPO:$IMAGE_TAG .
           docker tag $BACKEND_ECR_REPO:$IMAGE_TAG $BACKEND_ECR_REPO:latest
 
           docker push $BACKEND_ECR_REPO:$IMAGE_TAG
