@@ -18,5 +18,5 @@ COPY . .
 
 EXPOSE 5000
 
-CMD uwsgi --http :5000 --master --enable-threads --mount /=movies.app:app
+CMD uwsgi --http :5000 --master --enable-threads --module movies.app:app
 
