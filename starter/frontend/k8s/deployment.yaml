@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
+  labels:
+    app: frontend
 spec:
   replicas: 1
   selector:
@@ -17,3 +19,6 @@ spec:
           image: <YOUR_FRONTEND_ECR_REPO>:latest
           ports:
             - containerPort: 3000
+          env:
+            - name: REACT_APP_MOVIE_API_URL
+              value: "http://aab9837dffb4d4761bd5f01ff57b026b-1033079496.us-east-1.elb.amazonaws.com"
