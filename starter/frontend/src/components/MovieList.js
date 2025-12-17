@@ -9,7 +9,10 @@ function MovieList({ onMovieClick }) {
     axios
       .get(`${process.env.REACT_APP_MOVIE_API_URL}/movies`)
       .then((response) => {
-        setMovies(response.data);
+        setMovies(response.data.movies);
+      })
+      .catch((error) => {
+        console.error('Error fetching movies:', error);
       });
   }, []);
 
@@ -20,6 +23,13 @@ function MovieList({ onMovieClick }) {
           className="movieItem"
           key={movie.id}
           onClick={() => onMovieClick(movie)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              onMovieClick(movie);
+            }
+          }}
+          role="button"
+          tabIndex={0}
         >
           {movie.title}
         </li>
