@@ -1,26 +1,20 @@
-FROM python:3.10-slim
-
-ENV FLASK_RUN_HOST=0.0.0.0
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONPATH=/app
+FROM node:18.14.2-alpine3.17
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN pip install --no-cache-dir pipenv uwsgi
-
-COPY Pipfile Pipfile.lock ./
-RUN pipenv install --system --deploy
+COPY package*.json ./
+RUN npm ci
 
 COPY . .
 
-CMD ["uwsgi", \
-     "--http", ":5000", \
-     "--wsgi-file", "movies/app.py", \
-     "--callable", "app", \
-     "--master", \
-     "--enable-threads"]
+# Build-time variable
+ARG REACT_APP_MOVIE_API_URL
+ENV REACT_APP_MOVIE_API_URL=$REACT_APP_MOVIE_API_URL
 
+# Build React app (env injected here)
+RUN npm run build
+
+RUN npm install -g serve
+
+EXPOSE 3000
+CMD ["serve", "-s", "build", "-l", "3000"]
