@@ -23,9 +23,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
-
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
@@ -42,7 +39,7 @@ jobs:
           docker push ${{ secrets.FRONTEND_ECR_REPO }}:$IMAGE_TAG
           docker push ${{ secrets.FRONTEND_ECR_REPO }}:latest
 
-      - name: Update kubeconfig for EKS
+      - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig \
             --region ${{ secrets.AWS_REGION }} \
@@ -50,5 +47,5 @@ jobs:
 
       - name: Deploy frontend to EKS
         run: |
-          kubectl apply -k starter/frontend/k8s
+          kubectl apply -f starter/frontend/k8s
           kubectl rollout restart deployment frontend
