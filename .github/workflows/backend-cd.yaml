@@ -80,7 +80,7 @@ jobs:
         working-directory: starter/backend
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: backend
+          ECR_REPOSITORY: mp-backend
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -114,7 +114,7 @@ jobs:
         working-directory: starter/backend/k8s
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: backend
+          ECR_REPOSITORY: mp-backend
           IMAGE_TAG: ${{ github.sha }}
         run: |
           kustomize edit set image backend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
