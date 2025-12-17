@@ -2,14 +2,13 @@ FROM python:3.10-slim-buster
 
 WORKDIR /app
 
-# Install pipenv
-RUN pip install pipenv
-
-# Copy Pipfile and Pipfile.lock
+# Copy requirements
 COPY Pipfile Pipfile.lock ./
 
-# Install dependencies
-RUN pipenv install --system --deploy
+# Install pipenv and export to requirements.txt, then install with pip
+RUN pip install pipenv && \
+    pipenv requirements > requirements.txt && \
+    pip install -r requirements.txt
 
 # Copy application code
 COPY . .
