@@ -2,17 +2,11 @@ FROM python:3.10-slim-buster
 
 WORKDIR /app
 
-# Copy Pipfile
-COPY Pipfile Pipfile.lock ./
-
-# Install pipenv
-RUN pip install --no-cache-dir pipenv
-
-# Install only the packages we need (skip uwsgi which needs gcc)
-RUN pipenv install flask flask-cors pytest --skip-lock
-
-# Copy application code
+# Copy application code first
 COPY . .
+
+# Install dependencies directly with pip
+RUN pip install --no-cache-dir flask flask-cors pytest
 
 # Set environment variables
 ENV FLASK_APP=.
