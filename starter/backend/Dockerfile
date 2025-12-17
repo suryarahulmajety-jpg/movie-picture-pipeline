@@ -1,20 +1,21 @@
-FROM node:18.14.2-alpine3.17
+FROM python:3.10-slim-buster
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+# Install pipenv
+RUN pip install pipenv
 
+# Copy Pipfile and Pipfile.lock
+COPY Pipfile Pipfile.lock ./
+
+# Install dependencies
+RUN pipenv install --system --deploy
+
+# Copy application code
 COPY . .
 
-# Build-time variable
-ARG REACT_APP_MOVIE_API_URL
-ENV REACT_APP_MOVIE_API_URL=$REACT_APP_MOVIE_API_URL
+# Expose port
+EXPOSE 5000
 
-# Build React app (env injected here)
-RUN npm run build
-
-RUN npm install -g serve
-
-EXPOSE 3000
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Run the application
+CMD ["python", "app.py"]
