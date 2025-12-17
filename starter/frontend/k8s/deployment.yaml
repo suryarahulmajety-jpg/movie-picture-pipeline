@@ -15,7 +15,11 @@ spec:
         app: frontend
     spec:
       containers:
-        - name: frontend
-          image: 022304626846.dkr.ecr.us-east-1.amazonaws.com/mp-frontend:latest
-          ports:
-            - containerPort: 3000
+  - name: frontend
+    image: <YOUR_FRONTEND_ECR_REPO>:latest
+    ports:
+      - containerPort: 3000
+    env:
+      - name: REACT_APP_MOVIE_API_URL
+        value: "http://aab9837dffb4d4761bd5f01ff57b026b-1033079496.us-east-1.elb.amazonaws.com"
+
