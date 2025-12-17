@@ -2,19 +2,14 @@ FROM python:3.10-slim-buster
 
 WORKDIR /app
 
-# Install system dependencies for uwsgi
-RUN apt-get update && apt-get install -y \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
-
 # Copy Pipfile
 COPY Pipfile Pipfile.lock ./
 
 # Install pipenv
 RUN pip install --no-cache-dir pipenv
 
-# Install dependencies from Pipfile
-RUN pipenv install --system --deploy --ignore-pipfile
+# Install only the packages we need (skip uwsgi which needs gcc)
+RUN pipenv install flask flask-cors pytest --skip-lock
 
 # Copy application code
 COPY . .
