@@ -31,7 +31,7 @@ jobs:
         run: pipenv install --dev
       
       - name: Run lint
-        run: pipenv run lint || echo "Linting completed with warnings"
+        run: pipenv run lint || true
 
   test:
     runs-on: ubuntu-latest
@@ -67,4 +67,6 @@ jobs:
       
       - name: Build Docker image
         working-directory: starter/backend
-        run: docker build -t mp-backend:latest .
+        run: |
+          docker build -t mp-backend:latest .
+          echo "Docker image built successfully"
